@@ -245,6 +245,18 @@ var_vectorized <- function(mat) {
 
 sd_thresholding_for_categorical_outcome_variables_vec <- function(df, quant) {
   
+  col_types <- sapply(df, class)
+  
+  
+  index_chr <- which(str_detect(col_types, "character"))
+  index_factor <- which(str_detect(col_types, "factor"))
+  index_logical <- which(str_detect(col_types, "logical"))
+  all_indexes <- c(index_logical, index_factor, index_chr)
+  
+  if (length(all_indexes) != 0){
+    names_to_drop <- paste(colnames(df)[all_indexes], collapse = ", ")
+    print(str_glue("Dropping column(s) {names_to_drop} because factor, character or logical"))
+    df <- df[,-all_indexes]}
   
   var_each_features <- var_vectorized(df)
   
